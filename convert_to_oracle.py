@@ -1,20 +1,11 @@
 import requests
-import time
-
-
-def replace(fileName):
-    with open(fileName, 'r') as rsql:
-        sqlfile = rsql.read().replace("`", "").replace("AUTO_INCREMENT", "").replace("User(", "\"USER\"(")
-        rsql.close()
-    with open(fileName, 'w') as wsql:
-        wsql.write(sqlfile)
-        wsql.close()
 
 
 def convert(filename):
     with open(filename, 'r') as rsql:
         converted_sql = "SET DEFINE OFF;{0}".format(chr(10))
-        sql_file = rsql.read().split("INSERT INTO")
+        sql_file = rsql.read().replace("Lao People's Democratic Republic", "Lao People''s Democratic Republic").replace(
+            "Cote d'Ivoire", "Cote d''Ivoire").split("INSERT INTO")
         i = 0
 
         for sql in sql_file:
@@ -34,7 +25,7 @@ def convert(filename):
         # ???
         converted_sql = converted_sql.replace("__SQLINES_MULTI_PART__", "").replace("ROWNUM10", "NUMBER(10")
 
-        with open("converted.sql", 'w') as wsql:
+        with open("converted.sql", "w", encoding="utf-8") as wsql:
             wsql.write(converted_sql)
         wsql.close()
     rsql.close()
